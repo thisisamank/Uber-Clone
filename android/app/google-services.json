@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "970767880288",
+    "project_id": "uber-clone-add12",
+    "storage_bucket": "uber-clone-add12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970767880288:android:9a42b4d5e6f8282bfc7305",
+        "android_client_info": {
+          "package_name": "com.visnstudios.uber_clone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "970767880288-vj061qli76e7mq1hdk45q2pugf5dj724.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlWqloCLazfh2kP532lU4Et-mGB0mqdzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "970767880288-vj061qli76e7mq1hdk45q2pugf5dj724.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
