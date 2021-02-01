@@ -1,17 +1,28 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uber_clone/brand_colors.dart';
+import 'package:uber_clone/main_page.dart';
 import 'package:uber_clone/screens/login_page.dart';
 import 'package:uber_clone/widgets/taxt_button.dart';
 
-class RegistrationPage extends StatelessWidget {
+class RegistrationPage extends StatefulWidget {
   static const id = 'registerPage';
 
+  @override
+  _RegistrationPageState createState() => _RegistrationPageState();
+}
+
+class _RegistrationPageState extends State<RegistrationPage> {
   var _emailController = TextEditingController();
+
   var _nameController = TextEditingController();
+
   var _passwordController = TextEditingController();
+
   var _phoneController = TextEditingController();
 
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -105,7 +116,15 @@ class RegistrationPage extends StatelessWidget {
                   ),
                   TaxiButton(
                     title: 'REGISTER',
-                    onPressed: () {
+                    onPressed: () async {
+                      var connectivityResult =
+                          await Connectivity().checkConnectivity();
+                      if (connectivityResult != ConnectivityResult.mobile &&
+                          connectivityResult != ConnectivityResult.wifi) {
+                        showSnackbar(title: 'No Internet Available');
+                        return;
+                      }
+
                       if (_nameController.text.length < 3) {
                         showSnackbar(title: 'Please Enter Correct Name');
                         return;
@@ -148,14 +167,31 @@ class RegistrationPage extends StatelessWidget {
   }
 
   registerUser() async {
-    var user = (await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text, password: _passwordController.text));
+    var user = (await _auth
+            .createUserWithEmailAndPassword(
+                email: _emailController.text,
+                password: _passwordController.text)
+            .catchError((err) {
+      PlatformException exception = err;
+      showSnackbar(title: exception.message);
+    }))
+        .user;
+
+    DatabaseReference newUserRef =
+        FirebaseDatabase.instance.reference().child('users/${user.uid}');
+    Map userMap = {
+      'fullname': _nameController.text,
+      'email': _emailController.text,
+      'phone': _phoneController.text
+    };
+    newUserRef.set(userMap);
     if (user != null) {
       print("Registered");
+      Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (_) => false);
     }
   }
 
-  showSnackbar({title}) {
+  void showSnackbar({title}) {
     final snackbar = SnackBar(
       content: Text(
         title,
